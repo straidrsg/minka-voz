@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# Build outputs
+build/
+dist/
+*.spec
+
+# Flet
+flutter/
+*.apk
+*.exe
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Whisper models
+.cache/whisper/
+
+# Database
+*.db
+*.db-journal
+
+# Logs
+*.log

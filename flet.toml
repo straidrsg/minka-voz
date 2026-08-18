@@ -1,0 +1,13 @@
+# Flet build config - MINKA VOZ
+[app]
+name = "MINKA VOZ"
+description = "Traductor de voz Kogui <-> Espanol - Funciona sin internet"
+package_name = "com.minka.voz"
+product_id = "MINKA VOZ"
+entry_point = "main.py"
+requirements_file = "requirements_mobile.txt"
+
+[android]
+min_sdk_version = "24"
+target_sdk_version = "34"
+permissions = ["RECORD_AUDIO"]
