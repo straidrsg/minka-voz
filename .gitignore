@@ -11,6 +11,10 @@ build/
 dist/
 *.spec
 
+# Buildozer / Android build cache
+.buildozer/
+.buildozer_cache/
+
 # Flet
 flutter/
 *.apk
@@ -32,6 +36,9 @@ Thumbs.db
 # Database
 *.db
 *.db-journal
+
+# Dashboard del profesor — credenciales locales
+dashboard_profe/config.json
 
 # Logs
 *.log

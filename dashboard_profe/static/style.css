@@ -1,0 +1,156 @@
+:root {
+  --verde: #2e7d32;
+  --verde-claro: #e8f5e9;
+  --azul: #1565c0;
+  --rojo: #c62828;
+  --borde: #ddd;
+  --fondo: #f5f5f5;
+  --texto: #222;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+  min-height: 100vh;
+}
+
+/* ── Barra superior ── */
+.topbar {
+  background: var(--verde);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 12px 24px;
+  flex-wrap: wrap;
+}
+.topbar a { color: #fff; text-decoration: none; font-weight: 500; }
+.topbar a:hover { text-decoration: underline; }
+.topbar .brand { font-size: 18px; font-weight: 700; }
+.topbar .derecha { margin-left: auto; }
+
+/* ── Contenido ── */
+.contenedor { max-width: 1100px; margin: 0 auto; padding: 24px; }
+
+.cabecera { margin-bottom: 18px; }
+.cabecera.fila { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+h1 { font-size: 26px; }
+.sub { color: #666; }
+
+/* ── Alertas ── */
+.alerta { padding: 12px 16px; border-radius: 8px; margin-bottom: 14px; }
+.alerta-success { background: var(--verde-claro); color: var(--verde); border: 1px solid #a5d6a7; }
+.alerta-danger  { background: #ffebee; color: var(--rojo); border: 1px solid #ef9a9a; }
+.alerta-info    { background: #e3f2fd; color: var(--azul); border: 1px solid #90caf9; }
+
+/* ── Tarjetas de inicio ── */
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.tarjeta { background: #fff; border: 1px solid var(--borde); border-radius: 12px; padding: 18px; }
+.tarjeta h3 { margin-bottom: 10px; font-size: 16px; }
+.tarjeta p { margin: 6px 0; }
+.tarjeta code { background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 12px; word-break: break-all; }
+.grande { font-size: 28px; font-weight: 700; color: var(--verde); }
+.grande span { font-size: 14px; font-weight: 400; color: #666; }
+.acciones { display: flex; flex-direction: column; gap: 8px; }
+.acciones .btn { text-align: center; }
+
+.recientes { background: #fff; border: 1px solid var(--borde); border-radius: 12px; padding: 18px; }
+.recientes h2 { font-size: 18px; margin-bottom: 12px; }
+
+/* ── Tablas ── */
+.tabla { width: 100%; border-collapse: collapse; background: #fff; }
+.tabla th, .tabla td { border: 1px solid var(--borde); padding: 8px 10px; text-align: left; font-size: 14px; }
+.tabla th { background: #eefbe9; }
+.tabla tr:hover td { background: #fafafa; }
+.mono { font-size: 12px; color: #666; }
+.badge { background: var(--azul); color: #fff; border-radius: 10px; padding: 2px 8px; font-size: 11px; }
+.acciones-fila { white-space: nowrap; }
+.acciones-fila form { display: inline; }
+
+/* ── Botones ── */
+.btn {
+  display: inline-block; border: 1px solid var(--borde); border-radius: 8px;
+  background: #fff; color: var(--texto); padding: 8px 14px;
+  font-size: 14px; cursor: pointer; text-decoration: none;
+}
+.btn:hover { opacity: 0.9; }
+.btn-chico { padding: 4px 8px; font-size: 13px; border-radius: 6px; }
+.btn-grande { padding: 14px 24px; font-size: 18px; }
+.btn-ancho { width: 100%; margin-top: 10px; }
+.btn-primario { background: var(--verde); color: #fff; border-color: var(--verde); }
+.btn-verde { background: #43a047; color: #fff; border-color: #43a047; }
+.btn-azul { background: var(--azul); color: #fff; border-color: var(--azul); }
+.btn-rojo { background: #f5f5f5; color: var(--rojo); }
+.btn:disabled { opacity: 0.5; cursor: wait; }
+
+/* ── Filtros ── */
+.filtros { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+.filtros input[type=search], .filtros input[type=text] {
+  flex: 1; min-width: 220px; padding: 9px 12px; border: 1px solid var(--borde); border-radius: 8px; font-size: 14px;
+}
+.filtros select { padding: 9px 12px; border: 1px solid var(--borde); border-radius: 8px; font-size: 14px; background: #fff; }
+
+/* ── Modales ── */
+.modal {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center; z-index: 20; padding: 20px;
+}
+.modal-caja {
+  background: #fff; border-radius: 14px; padding: 24px; width: 100%; max-width: 440px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.modal-caja input, .modal-caja select {
+  padding: 9px 12px; border: 1px solid var(--borde); border-radius: 8px; font-size: 14px;
+}
+.fila { display: flex; gap: 10px; margin-top: 12px; }
+.fila .btn { flex: 1; text-align: center; }
+
+/* ── Tutoría ── */
+.linea-palabras { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.ficha-palabra {
+  background: #fff; border: 1px solid var(--borde); border-radius: 12px;
+  padding: 14px; text-align: center; display: flex; flex-direction: column; gap: 6px;
+}
+.ficha-palabra .kp { font-size: 20px; font-weight: 700; color: var(--verde); }
+.ficha-palabra .es { font-size: 14px; color: #555; }
+.fila-chica { display: flex; gap: 4px; justify-content: center; }
+
+.panel-sesion {
+  background: #fff; border-radius: 16px; padding: 28px; width: 100%; max-width: 700px; text-align: center;
+}
+.sesion-controles { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.sesion-contenido { margin: 20px 0; }
+.kp-gigante { font-size: 72px; font-weight: 800; color: var(--verde); line-height: 1.1; }
+.es-gigante { font-size: 40px; color: var(--azul); margin-top: 10px; }
+.sesion-acciones { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+/* ── Tarjeta grande ── */
+.tarjeta-gigante-wrap { min-height: 70vh; display: flex; align-items: center; justify-content: center; }
+.tarjeta-gigante { text-align: center; background: #fff; border: 2px solid var(--verde); border-radius: 20px; padding: 50px; max-width: 700px; }
+
+/* ── Login ── */
+.caja-login {
+  background: #fff; border: 1px solid var(--borde); border-radius: 14px;
+  padding: 28px; max-width: 420px; margin: 40px auto;
+}
+.caja-login h1 { text-align: center; color: var(--verde); }
+.caja-login .sub, .form-login label { text-align: center; color: #666; display: block; margin: 6px 0; }
+.form-login input[type=password], .caja-login input[type=text], .caja-login input[type=password] {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--borde); border-radius: 8px; font-size: 15px; margin-bottom: 10px;
+}
+.ayuda { font-size: 12px; color: #888; margin-bottom: 12px; }
+.vacio { color: #999; font-style: italic; padding: 12px 0; }
+
+/* ── Snackbar ── */
+#snackbar {
+  visibility: hidden; min-width: 260px; background: #333; color: #fff; text-align: center;
+  border-radius: 8px; padding: 14px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+  z-index: 100; font-size: 14px;
+}
+#snackbar.mostrar { visibility: visible; animation: fade 0.3s; }
+#snackbar.ok { background: #2e7d32; }
+#snackbar.fail { background: #c62828; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }

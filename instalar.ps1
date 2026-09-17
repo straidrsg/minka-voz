@@ -1,6 +1,11 @@
 #!/usr/bin/env pwsh
-# Instalador de MINKA VOZ para Windows
-# Instala ffmpeg, crea venv, instala paquetes Python y prepara la BD
+<#
+.SYNOPSIS
+    Instalador de MINKA VOZ para Windows
+.DESCRIPTION
+    Instala dependencias del sistema (ffmpeg), crea entorno virtual,
+    instala paquetes Python y prepara la base de datos.
+#>
 
 param(
     [switch]$SaltarFFmpeg,
@@ -33,7 +38,7 @@ if (-not $SaltarFFmpeg) {
     Write-Step "Instalando ffmpeg (requerido por Whisper)..."
     if (Get-Command ffmpeg -ErrorAction SilentlyContinue) {
         Write-Host "  ffmpeg ya está instalado" -ForegroundColor Gray
-    } else {
+   } else {
         try {
             winget install --id Gyan.FFmpeg --silent --accept-source-agreements --accept-package-agreements
             $env:PATH = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")

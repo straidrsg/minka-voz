@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Diccionario — MINKA VOZ{% endblock %}
+{% block content %}
+<div class="cabecera fila">
+  <div>
+    <h1>📖 Rectificar palabras</h1>
+    <p class="sub">Corrige el par Kogui <-> Español que usa el traslator de voz.</p>
+  </div>
+  <button class="btn btn-verde" onclick="document.getElementById('modal-agregar').style.display='flex'">➕ Agregar palabra</button>
+</div>
+
+{% if error %}<div class="alerta alerta-danger">{{ error }}</div>{% endif %}
+
+<form method="get" class="filtros">
+  <input type="search" name="q" value="{{ q }}" placeholder="Buscar Kogui o Español...">
+  <select name="cat" onchange="this.form.submit()">
+    <option value="">Todas las categorías</option>
+    {% for c in categorias %}
+    <option value="{{ c }}" {{ 'selected' if c == cat }}>{{ c }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn btn-primario" type="submit">Filtrar</button>
+</form>
+
+{% if palabras %}
+<table class="tabla">
+  <tr><th>Kogui</th><th>Español</th><th>Categoría</th><th>Notas</th><th></th></tr>
+  {% for p in palabras %}
+  <tr>
+    <td><b>{{ p.kogui }}</b></td>
+    <td>{{ p.spanish }}</td>
+    <td><span class="badge">{{ p.categoria }}</span></td>
+    <td class="mono">{{ p.notas }}</td>
+    <td class="acciones-fila">
+      <button class="btn btn-chico" onclick='repetirTexto({{ p.kogui | tojson }}, this)' title="Decir en Kogui">🔊</button>
+      <button class="btn btn-chico" onclick='tarjetaGrande({{ p.kogui | tojson }}, {{ p.spanish | tojson }})' title="Tarjeta grande">🖥</button>
+      <button class="btn btn-chico" onclick='document.getElementById("modal-editar-{{ p.id }}").style.display="flex"' title="Editar">✏️</button>
+      <form method="post" action="{{ url_for('diccionario_eliminar', pid=p.id) }}" style="display:inline"
+            onsubmit="return confirm('Eliminar {{ p.kogui }} -> {{ p.spanish }}?')">
+        <button class="btn btn-chico btn-rojo" type="submit" title="Eliminar">🗑</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="vacio">No hay palabras que coincidan.</p>
+{% endif %}
+
+<!-- Modal agregar -->
+<div class="modal" id="modal-agregar" style="display:none">
+  <form class="modal-caja" method="post" action="{{ url_for('diccionario_agregar') }}">
+    <h3>➕ Nueva palabra</h3>
+    <label>Kogui *</label><input name="kogui" required>
+    <label>Español *</label><input name="spanish" required>
+    <label>Categoría</label>
+    <select name="categoria">
+      {% for c in categorias %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+    </select>
+    <label>Notas</label><input name="notas">
+    <div class="fila">
+      <button class="btn btn-verde" type="submit">Guardar</button>
+      <button class="btn" type="button" onclick="this.closest('.modal').style.display='none'">Cancelar</button>
+    </div>
+  </form>
+</div>
+
+<!-- Modales editar -->
+{% for p in palabras %}
+<div class="modal" id="modal-editar-{{ p.id }}" style="display:none">
+  <form class="modal-caja" method="post" action="{{ url_for('diccionario_editar', pid=p.id) }}">
+    <h3>✏️ Rectificar #{{ p.id }}</h3>
+    <label>Kogui *</label><input name="kogui" value="{{ p.kogui }}" required>
+    <label>Español *</label><input name="spanish" value="{{ p.spanish }}" required>
+    <label>Categoría</label>
+    <select name="categoria">
+      {% for c in categorias %}
+      <option value="{{ c }}" {{ 'selected' if c == p.categoria }}>{{ c }}</option>
+      {% endfor %}
+    </select>
+    <label>Notas</label><input name="notas" value="{{ p.notas }}">
+    <div class="fila">
+      <button class="btn btn-primario" type="submit">Guardar</button>
+      <button class="btn" type="button" onclick="this.closest('.modal').style.display='none'">Cancelar</button>
+    </div>
+  </form>
+</div>
+{% endfor %}
+{% endblock %}

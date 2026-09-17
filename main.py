@@ -235,7 +235,7 @@ if not is_android:
             pass
         procesar_android_resultado(texto, status_text, page)
 
-    def detener_grabacion_btn(icon, status_text, page):
+def detener_grabacion_btn(icon, status_text, page):
     global grabando
     if not grabando:
         return

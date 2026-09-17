@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Configuración — MINKA VOZ{% endblock %}
+{% block content %}
+<div class="cabecera">
+  <h1>⚙️ Conexión con la Raspberry Pi</h1>
+  <p class="sub">Solo necesitas indicar dónde está la RPi y probar la conexión.</p>
+</div>
+
+{% if primer_uso %}
+<div class="alerta alerta-info">👋 ¡Bienvenido! Esta es la primera vez que abres el dashboard.
+Configura la dirección de la Raspberry Pi y pulsa <b>Guardar y probar</b>.</div>
+{% endif %}
+
+<div class="caja-login">
+  <form method="post" id="form-config">
+    <label>Dirección de la Raspberry Pi</label>
+    <input type="text" name="rpi_url" value="{{ cfg.rpi_url }}" placeholder="100.112.30.7" required>
+    <p class="ayuda">Puedes escribir solo la IP: el dashboard completa<br>
+      <b>http://…:8290</b> solo. Si es una IP Tailscale (100.x.x.x) funciona
+      desde cualquier red.</p>
+
+    <label>Token de la API (opcional)</label>
+    <input type="text" name="token" value="{{ cfg.token }}" placeholder="(vacío = sin token)">
+    <p class="ayuda">Solo si configuró un MINKA_API_TOKEN en la RPi.</p>
+
+    {% if not primer_uso %}
+    <label>Nueva contraseña del dashboard (opcional)</label>
+    <input type="password" name="password" placeholder="Dejar vacío para no cambiarla">
+    <p class="ayuda">La contraseña actual es: <code>{{ cfg.password }}</code></p>
+    {% endif %}
+
+    <button class="btn btn-primario btn-ancho" type="submit">💾 Guardar y probar conexión</button>
+    <button class="btn btn-verde btn-ancho" type="button" id="btn-probar" style="margin-top:8px">🔌 Probar conexión sin guardar</button>
+    <p id="msg-probar" class="ayuda"></p>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function probar() {
+    var msg = document.getElementById('msg-probar');
+    var btn = document.getElementById('btn-probar');
+    btn.disabled = true; btn.textContent = 'Probando…';
+    msg.textContent = 'Probando conexión con la Raspberry Pi…';
+    fetch('{{ url_for("probar_conexion") }}', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'rpi_url=' + encodeURIComponent(document.querySelector('input[name=rpi_url]').value) +
+            '&token=' + encodeURIComponent(document.querySelector('input[name=token]').value)
+    }).then(function(r){ return r.json(); })
+      .then(function(d){
+        btn.disabled = false; btn.textContent = '🔌 Probar conexión sin guardar';
+        if (d.ok) { msg.textContent = '✅ Conexión exitosa — RPi: ' + d.estado + ', ' + d.palabras + ' palabras';
+                    msg.style.color = 'var(--ok)';
+        } else { msg.textContent = '❌ ' + d.error; msg.style.color = 'var(--danger)'; }
+      })
+      .catch(function(){ btn.disabled = false; btn.textContent = '🔌 Probar conexión sin guardar';
+        msg.textContent = '❌ No se pudo contactar la RPi'; msg.style.color = 'var(--danger)'; });
+  }
+  document.getElementById('btn-probar').addEventListener('click', probar);
+</script>
+{% endblock %}

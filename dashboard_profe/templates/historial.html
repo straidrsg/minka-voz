@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Historial — MINKA VOZ{% endblock %}
+{% block content %}
+<div class="cabecera">
+  <h1>🕘 Historial del estudiante</h1>
+  <p class="sub">Lo que se dijo y se tradujo en la RPi. Usa 🔊 para repetir por el altavoz y 🖥 para la tarjeta grande.</p>
+</div>
+
+{% if error %}<div class="alerta alerta-danger">{{ error }}</div>{% endif %}
+
+<form method="get" class="filtros">
+  <input type="search" name="q" value="{{ q }}" placeholder="Buscar en historial...">
+  <button class="btn btn-primario" type="submit">Buscar</button>
+  {% if q %}<a class="btn" href="{{ url_for('historial') }}">Limpiar</a>{% endif %}
+</form>
+
+{% if historial %}
+<table class="tabla">
+  <tr><th>Fecha</th><th>Original</th><th>Traducción</th><th>Dir</th><th>Fuente</th><th>Acciones</th></tr>
+  {% for h in historial %}
+  <tr>
+    <td class="mono">{{ h.fecha }}</td>
+    <td>{{ h.message }}</td>
+    <td>{{ h.texto_traducido }}</td>
+    <td>{{ 'K→E' if h.direccion == 'k2e' else 'E→K' }}</td>
+    <td><span class="badge">{{ h.fuente }}</span></td>
+    <td class="acciones-fila">
+      <button class="btn btn-chico" onclick='repetirTexto({{ h.texto_traducido | tojson }}, this)' title="Repetir traducción">🔊</button>
+      <a class="btn btn-chico" href="{{ url_for('tarjeta') }}?kogui={{ h.message }}&spanish={{ h.texto_traducido }}" title="Tarjeta grande">🖥</a>
+      <a class="btn btn-chico btn-editar" href="{{ url_for('diccionario') }}?q={{ h.message }}" title="Buscar en diccionario">🔎</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="vacio">No hay registros.</p>
+{% endif %}
+{% endblock %}

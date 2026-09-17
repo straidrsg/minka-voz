@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Tutoría — MINKA VOZ{% endblock %}
+{% block content %}
+<div class="cabecera">
+  <h1>🎓 Tutoría — práctica por categoría</h1>
+  <p class="sub">Arma una sesión de práctica con las palabras de una categoría.</p>
+</div>
+
+{% if error %}<div class="alerta alerta-danger">{{ error }}</div>{% endif %}
+
+<div class="filtros">
+  <form method="get">
+    <select name="cat" onchange="this.form.submit()">
+      <option value="">Todas las categorías</option>
+      {% for c in categorias %}
+      <option value="{{ c }}" {{ 'selected' if c == cat }}>{{ c }}</option>
+      {% endfor %}
+    </select>
+  </form>
+  {% if palabras %}
+  <button class="btn btn-azul" onclick="iniciarSesion()">▶ Iniciar sesión de práctica</button>
+  {% endif %}
+</div>
+
+{% if palabras %}
+<div class="linea-palabras">
+  {% for p in palabras %}
+  <div class="ficha-palabra" data-kogui="{{ p.kogui }}" data-spanish="{{ p.spanish }}">
+    <div class="kp">{{ p.kogui }}</div>
+    <div class="es">{{ p.spanish }}</div>
+    <span class="badge">{{ p.categoria }}</span>
+    <div class="fila-chica">
+      <button class="btn btn-chico" onclick='repetirTexto({{ p.kogui | tojson }}, this)' title="Decir Kogui">🔊 K</button>
+      <button class="btn btn-chico" onclick='repetirTexto({{ p.spanish | tojson }}, this)' title="Decir Español">🔊 E</button>
+      <button class="btn btn-chico" onclick='tarjetaGrande({{ p.kogui | tojson }}, {{ p.spanish | tojson }})'>🖥</button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="vacio">Selecciona una categoría para practicar.</p>
+{% endif %}
+
+<!-- Pantalla de práctica -->
+<div class="modal" id="modal-sesion" style="display:none">
+  <div class="panel-sesion">
+    <div class="sesion-controles">
+      <button class="btn" onclick="pasoSesion(-1)">◀ Anterior</button>
+      <span id="sesion-progreso"></span>
+      <button class="btn" onclick="pasoSesion(1)">Siguiente ▶</button>
+    </div>
+    <div id="sesion-contenido" class="sesion-contenido"></div>
+    <div class="sesion-acciones">
+      <button class="btn btn-primario" id="sesion-repetir" onclick="repetirSesion()">🔊 Repetir en altavoz</button>
+      <button class="btn" onclick="document.getElementById('modal-sesion').style.display='none'">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  var palabrasSesion = [];
+  var indiceSesion = 0;
+  (function(){
+    document.querySelectorAll('.ficha-palabra').forEach(function(f){
+      palabrasSesion.push({kogui: f.dataset.kogui, spanish: f.dataset.spanish});
+    });
+    if (palabrasSesion.length === 0) return;
+    // barajar (Fisher-Yates)
+    for (var i = palabrasSesion.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = palabrasSesion[i]; palabrasSesion[i] = palabrasSesion[j]; palabrasSesion[j] = t;
+    }
+  })();
+  function iniciarSesion(){
+    if (!palabrasSesion.length) return;
+    indiceSesion = 0;
+    document.getElementById('modal-sesion').style.display = 'flex';
+    mostrarSesion();
+  }
+  function mostrarSesion(){
+    var p = palabrasSesion[indiceSesion];
+    var c = document.getElementById('sesion-contenido');
+    c.innerHTML = '<div class="kp kp-gigante">' + p.kogui + '</div>' +
+                  '<div class="es es-gigante">' + p.spanish + '</div>';
+    document.getElementById('sesion-progreso').textContent =
+      (indiceSesion + 1) + ' / ' + palabrasSesion.length +
+      ' — ¿cómo se dice «' + p.spanish + '» en Kogui?';
+  }
+  function pasoSesion(d){
+    var n = indiceSesion + d;
+    if (n < 0 || n >= palabrasSesion.length) return;
+    indiceSesion = n;
+    mostrarSesion();
+  }
+  function repetirSesion(){
+    var p = palabrasSesion[indiceSesion];
+    repetirTexto(p.kogui, document.getElementById('sesion-repetir'));
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,100 @@
+#:kivy 1.0.9
+
+<MinKivaApp>:
+    # Ventana principal
+    FloatLayout:
+        canvas:
+            Color:
+                rgba: 0.95, 0.95, 0.95, 1
+            Rectangle:
+                pos: self.center_x - 150, self.top - 50
+                size: 300, 30
+        
+        # Texto de estado en la parte superior
+        Label:
+            id: status_text
+            text: "Cargando modelo..."
+            font_size: 14
+            color: 0.5, 0.5, 0.5, 1
+            size_hint_y: None
+            height: 30
+            y: root.top - 30
+            center_x: root.center_x
+            halign: 'center'
+            text_size: self.width, None
+        
+        # Área del micrófono central
+        FloatLayout:
+            size_hint: None, None
+            size: 120, 120
+            pos_hint: {'center_x': 0.5, 'center_y': 0.55}
+            canvas:
+                Color:
+                    rgba: 0, 0, 1, 1 if app.grabando else 0.2, 0.2, 0.8, 1
+                RoundedRectangle:
+                    pos: self.x, self.y
+                    size: self.width, self.height
+                    radius: [60]
+            Image:
+                source: 'atlas://data/images/defaulttheme/checkbox_normal'  # placeholder
+                size: self.parent.size
+                allow_stretch: True
+                center: self.parent.center
+        
+        # Botón flotante de micrófono
+        Button:
+            id: btn_mic
+            size_hint: None, None
+            size: 100, 100
+            pos_hint: {'center_x': 0.5, 'center_y': 0.55}
+            background_color: 0, 0, 1, 1
+            canvas:
+                Color:
+                    rgba: 1, 0.2, 0.2, 1 if not app.grabando else 1, 0, 0, 1
+                Ellipse:
+                    pos: self.x + 10, self.y + 10
+                    size: self.width - 20, self.height - 20
+            on_press:
+                app.iniciar_grabacion()
+                root.update_mic_estado('grabando')
+            on_release:
+                root.pargar_procesar()
+        
+        # Botón cambiar modo
+        Button:
+            text: "Kogui -> Espanol" if app.modo == 'k2e' else "Espanol -> Kogui"
+            size_hint: 0.4, 0.1
+            pos_hint: {'x': 0.3, 'top': 0.9}
+            background_color: 0, 0.5, 1, 1
+            on_press: app.alternar_modo()
+        
+        # Botón diccionario
+        Button:
+            text: "Diccionario"
+            size_hint: 0.3, 0.1
+            pos_hint: {'x': 0.35, 'top': 0.9}
+            background_color: 0, 0.8, 0, 1
+            on_press: root._abrir_diccionario()
+        
+        # Historial en la parte inferior
+        BoxLayout:
+            id: historial_container
+            size_hint: 1, 0.6
+            pos_hint: {'y': 0.08}
+            spacing: 5
+            padding: 5
+            default_size: root.width, None
+            orientation: 'vertical':
+                ScrollView:
+                    BarManager:
+                        ScrollView:
+                            BoxLayout:
+                                id: historial_column
+                                orientation: 'vertical'
+                                size_hint_y: None
+                                height: self.minimum_height
+                                spacing: 5
+                                Button:
+                                    text: 'Aquí irán las traducciones'
+                                    size_hint_y: None
+                                    height: 40

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Tarjeta grande — MINKA VOZ{% endblock %}
+{% block content %}
+<div class="tarjeta-gigante-wrap">
+  <div class="tarjeta-gigante">
+    <div class="kp kp-gigante">{{ kogui or '—' }}</div>
+    <div class="es es-gigante">{{ spanish or '—' }}</div>
+    <div class="sesion-acciones">
+      <button class="btn btn-primario btn-grande" onclick='repetirTexto({{ kogui | tojson }}, this)'>🔊 Repetir Kogui</button>
+      <button class="btn btn-verde btn-grande" onclick='repetirTexto({{ spanish | tojson }}, this)'>🔊 Repetir Español</button>
+    </div>
+  </div>
+</div>
+{% endblock %}

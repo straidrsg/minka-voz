@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Inicio — MINKA VOZ{% endblock %}
+{% block content %}
+<div class="cabecera">
+  <h1>👨‍🏫 Panel del Profesor</h1>
+  <p class="sub">Sistema conectado a la Raspberry Pi — traslator de voz Kogui <-> Español</p>
+</div>
+
+{% if error_estado %}
+  <div class="alerta alerta-danger">
+    <b>No se pudo contactar la RPi.</b><br>
+    {{ error_estado }} — revisa <a href="{{ url_for('configuracion') }}">Configuración</a>.
+  </div>
+{% else %}
+<div class="tarjetas">
+  <div class="tarjeta estado">
+    <h3>🟢 Estado RPi</h3>
+    <p><b>Plataforma:</b> {{ estado.plataforma }}</p>
+    <p><b>Base de datos:</b><br><code>{{ estado.db }}</code></p>
+    <p><b>Mic INMP441:</b> {{ estado.audio.inmp441 or 'no detectado' }}</p>
+    <p><b>Altavoz MAX98357A:</b> {{ estado.audio.max98357a or 'no detectado' }}</p>
+    <p><b>Última actualización:</b> {{ estado.tiempo }}</p>
+  </div>
+  <div class="tarjeta">
+    <h3>📊 Inventario</h3>
+    <p class="grande">{{ estado.palabras }} <span>palabras</span></p>
+    <p class="grande">{{ estado.conversaciones }} <span>conversaciones</span></p>
+  </div>
+  <div class="tarjeta acciones">
+    <h3>⚡ Acciones rápidas</h3>
+    <a class="btn btn-primario" href="{{ url_for('diccionario') }}">📖 Rectificar palabras</a>
+    <a class="btn btn-verde" href="{{ url_for('historial') }}">🕘 Revisar historial</a>
+    <a class="btn btn-azul" href="{{ url_for('tutoria') }}">🎓 Tutoría</a>
+  </div>
+</div>
+
+<div class="recientes">
+  <h2>Últimas frases del estudiante</h2>
+  {% if historial %}
+  <table class="tabla">
+    <tr><th>Fecha</th><th>Original</th><th>Traducción</th><th>Dir</th><th>Fuente</th><th></th></tr>
+    {% for h in historial %}
+    <tr>
+      <td class="mono">{{ h.fecha }}</td>
+      <td>{{ h.message }}</td>
+      <td>{{ h.texto_traducido }}</td>
+      <td>{{ 'K→E' if h.direccion == 'k2e' else 'E→K' }}</td>
+      <td><span class="badge">{{ h.fuente }}</span></td>
+      <td class="acciones-fila">
+        <button class="btn btn-chico" onclick='repetirTexto({{ h.texto_traducido | tojson }}, this)'>🔊</button>
+        <a class="btn btn-chico" href="{{ url_for('tarjeta') }}?kogui={{ h.message }}&spanish={{ h.texto_traducido }}">🖥</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p class="vacio">Sin conversaciones todavía.</p>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

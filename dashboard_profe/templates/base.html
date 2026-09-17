@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}MINKA VOZ — Profesor{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% if session.get('logueado') %}
+  <nav class="topbar">
+    <a class="brand" href="{{ url_for('index') }}">🌿 MINKA VOZ</a>
+    <a href="{{ url_for('index') }}">Inicio</a>
+    <a href="{{ url_for('diccionario') }}">Diccionario</a>
+    <a href="{{ url_for('historial') }}">Historial</a>
+    <a href="{{ url_for('tutoria') }}">Tutoría</a>
+    <a href="{{ url_for('configuracion') }}">Config</a>
+    <a class="derecha" href="{{ url_for('logout') }}">Salir</a>
+    <a class="apagar" href="#" id="link-apagar" title="Cerrar el dashboard">⏻ Apagar</a>
+  </nav>
+  {% endif %}
+
+  <main class="contenedor">
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+      {% for categoria, mensaje in mensajes %}
+        <div class="alerta alerta-{{ categoria }}">{{ mensaje }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <div id="snackbar"></div>
+  {% block scripts %}{% endblock %}
+  <script>
+    function mostrarSnack(texto, ok) {
+      var s = document.getElementById('snackbar');
+      s.textContent = texto;
+      s.className = 'mostrar ' + (ok ? 'ok' : 'fail');
+      setTimeout(function(){ s.className = ''; }, 3000);
+    }
+    function repetirTexto(texto, btn) {
+      if (!texto) return;
+      if (btn) { btn.disabled = true; btn.textContent = '🔊...'; }
+      fetch('{{ url_for("repetir") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'texto=' + encodeURIComponent(texto)
+      }).then(function(r){ return r.json(); })
+        .then(function(d){
+          mostrarSnack(d.ok ? ('Reproducido: ' + texto) : ('Error: ' + d.error), d.ok);
+          if (btn) { btn.disabled = false; btn.textContent = '🔊 Repetir'; }
+        })
+        .catch(function(){ mostrarSnack('Fallo de red', false);
+          if (btn) { btn.disabled = false; btn.textContent = '🔊 Repetir'; } });
+    }
+    function tarjetaGrande(kogui, spanish) {
+      window.open('{{ url_for("tarjeta") }}?kogui=' + encodeURIComponent(kogui || '') +
+                  '&spanish=' + encodeURIComponent(spanish || ''), '_blank');
+    }
+    var la = document.getElementById('link-apagar');
+    if (la) la.addEventListener('click', function(e){
+      e.preventDefault();
+      if (confirm('¿Cerrar el dashboard del profesor?')) {
+        document.location = '{{ url_for("apagar") }}';
+      }
+    });
+  </script>
+</body>
+</html>
